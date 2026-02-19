@@ -1,3 +1,9 @@
 /WebApi/obj
 /WebApi/bin
 /.vs/VoicePitch/FileContentIndex/*.vsidx
+/.vs
+/WebApi/WebApi.csproj.user
+/VoicePitch.slnLaunch.user
+/WebApp/obj
+/WebApp/bin
+/WebApp/WebApp.csproj.user

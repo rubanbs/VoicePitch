@@ -1,0 +1,36 @@
+﻿<button onclick="start()">Start</button>
+<div id="pitch"></div>
+
+<script>
+    let socket;
+    let audioContext;
+    let processor;
+
+    async function start() {
+
+		socket = new WebSocket("ws://localhost:32770/ws/pitch");
+
+        socket.onmessage = (event) => {
+            document.getElementById("pitch").innerText =
+                "Pitch: " + event.data + " Hz";
+        };
+
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+        audioContext = new AudioContext({ sampleRate: 44100 });
+        const source = audioContext.createMediaStreamSource(stream);
+
+        processor = audioContext.createScriptProcessor(2048, 1, 1);
+
+        source.connect(processor);
+        processor.connect(audioContext.destination);
+
+        processor.onaudioprocess = (e) => {
+
+            const input = e.inputBuffer.getChannelData(0);
+
+            const floatArray = new Float32Array(input);
+            socket.send(floatArray.buffer);
+        };
+    }
+</script>
