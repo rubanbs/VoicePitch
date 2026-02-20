@@ -4,8 +4,20 @@
     ViewData["Title"] = "Home page";
 }
 
-<button onclick="start()">Start</button>
+<progress id="progress" value="0" max="500"></progress>
 <div id="pitch"></div>
+
+<section class="jumbotron text-center">
+    <div class="container">
+        <h1 class="jumbotron-heading">Voice pitch.</h1>
+        <p class="lead text-muted">The simplest voice pitch detector based on auto-correlation.</p>
+        <p>
+            <a href="#" class="btn btn-primary my-2" onclick="loadPitches()">Load Pitches</a>
+            <a href="#" class="btn btn-success my-2" onclick="start()">Start</a>
+        </p>
+    </div>
+</section>
+<ul id="pitchList" class="list-group list-group-flush"></ul>
 
 <script>
     let socket;
@@ -21,8 +33,8 @@
         };
 
         socket.onmessage = (event) => {
-            document.getElementById("pitch").innerText =
-                "Pitch: " + event.data + " Hz";
+            document.getElementById("pitch").innerText = event.data + " Hz";
+            document.getElementById("progress").value = event.data;
         };
 
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -46,4 +58,21 @@
             }
         };
     }
+
+    async function loadPitches() {
+        const response = await fetch("http://localhost:5001/api/VoicePitch/getpitches");
+
+        const data = await response.json();
+
+        const list = document.getElementById("pitchList");
+        list.innerHTML = "";
+
+        data.forEach(item => {
+            const li = document.createElement("li");
+            li.className = "list-group-item";
+            li.textContent = item.name + ": " + item.value;
+            list.appendChild(li);
+        });
+    }
 </script>
+

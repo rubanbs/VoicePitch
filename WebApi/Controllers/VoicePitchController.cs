@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WebApi.Dto;
 using WebApi.Services;
 
 namespace WebApi.Controllers;
@@ -25,5 +26,19 @@ public class VoicePitchController : Controller
 
         using var socket = await HttpContext.WebSockets.AcceptWebSocketAsync();
         await _streamService.HandleConnectionAsync(socket, CancellationToken.None);
+    }
+
+    [HttpGet("getpitches")]
+    public List<PitchDto> GetPitches()
+    {
+        var result = new List<PitchDto>
+        {
+            new PitchDto("Бас", "75 - 330 Гц"),
+            new PitchDto("Тенор", "120 - 500 Гц"),
+            new PitchDto("Меццо - сопрано","170 - 700 Гц"),
+            new PitchDto("Сопрано", "230 - 1100 Гц")
+        };
+
+        return result;
     }
 }

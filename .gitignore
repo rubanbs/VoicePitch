@@ -7,3 +7,5 @@
 /WebApp/obj
 /WebApp/bin
 /WebApp/WebApp.csproj.user
+/obj
+/bin
